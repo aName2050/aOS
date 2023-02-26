@@ -1,39 +1,56 @@
 [org 0x7c00] 
-mov [BOOT_DISK], dl                 
+mov [BOOT_DISK], dl 
 
-; setting up the stack
+CODE_SEG equ code_descriptor - GDT_Start
+DATA_SEG equ data_descriptor - GDT_Start
 
-xor ax, ax                          
-mov es, ax
-mov ds, ax
-mov bp, 0x8000
-mov sp, bp
+cli
+lgdt [GDT_Descriptor]
+mov eax, cr0
+or eax, 1
+mov cr0, eax ; CPU now in 32-bit protected mode
+jmp CODE_SEG:start_protected_mode
 
-mov bx, 0x7e00
-
-; reading the disk
-
-mov ah, 2
-mov al, 1
-mov ch, 0
-mov dh, 0
-mov cl, 2
-mov dl, [BOOT_DISK]
-int 0x13
-
-; printing what is in the next sector
-
-mov ah, 0x0e
-mov al, [0x7e00]
-int 0x10
 jmp $
+
+
+GDT_Start:
+    null_descriptor:
+        dd 0x0 ; four times 00000000
+        dd 0x0 ; four times 00000000
+    code_descriptor:
+        dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10011010
+        db 0b11001111
+        db 0x0
+    data_descriptor:
+        dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10010010
+        db 0b11001111
+        db 0x0
+
+GDT_End:
+
+
+GDT_Descriptor:
+    dw GDT_End - GDT_Start - 1 ; size
+    dd GDT_Start ; start
+
+
+[bits 32]
+start_protected_mode:
+    mov al, 'A'
+    mov ah, 0x0f
+    mov [0xb8000], ax
+    jmp $
+
 BOOT_DISK: db 0
 
-; magic padding
+; boot sector padding
 
-times 510-($-$$) db 0              
+times 510-($-$$) db 0
 dw 0xaa55
-
-; filling the second sector ( the one that will be readed ) with 'A's
-
-times 512 db 'A'
