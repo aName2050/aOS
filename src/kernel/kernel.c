@@ -1,4 +1,5 @@
 void dummy_test_entrypoint() {
+    
 }
 
 extern void main() {
