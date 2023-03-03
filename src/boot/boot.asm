@@ -6,9 +6,9 @@ mov [BOOT_DRIVE], dl
 mov bp, 0x9000
 mov sp, bp
 
-mov ah, 0x0
-mov al, 0x3
-int 0x10  
+; mov ah, 0x0
+; mov al, 0x3
+; int 0x10  
 
 mov bx, MSG_REAL_MODE 
 call print
@@ -18,12 +18,12 @@ call load_kernel
 call switch_to_pm 
 jmp $ 
 
-%include "D:/aOS/src/display/print.asm"
-%include "D:/aOS/src/display/print_hex.asm"
-%include "D:/aOS/src/disk/disk.asm"
-%include "D:/aOS/src/32-bit/gdt.asm"
-%include "D:/aOS/src/display/print32.asm"
-%include "D:/aOS/src/32-bit/switch.asm"
+%include "D:/aOS/src/boot/display/print.asm"
+%include "D:/aOS/src/boot/display/print_hex.asm"
+%include "D:/aOS/src/boot/disk/disk.asm"
+%include "D:/aOS/src/boot/32-bit/gdt.asm"
+%include "D:/aOS/src/boot/display/print32.asm"
+%include "D:/aOS/src/boot/32-bit/switch.asm"
 
 [bits 16]
 load_kernel:
