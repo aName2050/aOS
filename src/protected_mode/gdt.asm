@@ -1,11 +1,25 @@
+;
+; Long Mode
+;
+; gdt.asm
+;
+
+;
+; Define the Flat Mode Configuration Global Descriptor Table (GDT)
+; The flat mode table allows us to read and write code anywhere, without restriction
+;
+
 align 4
 
 gdt_64_start:
 
+; Define the null sector for the 64 bit gdt
+; Null sector is required for memory integrity check
 gdt_64_null:
-    dd 0x00000000
-    dd 0x00000000
+    dd 0x00000000           ; All values in null entry are 0
+    dd 0x00000000           ; All values in null entry are 0
 
+; Define the code sector for the 64 bit gdt
 gdt_64_code:
     ; Base:     0x00000
     ; Limit:    0xFFFFF
@@ -31,6 +45,7 @@ gdt_64_code:
     db 0b10101111       ; 2nd Flags, Limit (bits 16-19)
     db 0x00             ; Base  (bits 24-31)
 
+; Define the data sector for the 64 bit gdt
 gdt_64_data:
     ; Base:     0x00000
     ; Limit:    0x00000
@@ -58,9 +73,13 @@ gdt_64_data:
 
 gdt_64_end:
 
+; Define the gdt descriptor
+; This data structure gives cpu length and start address of gdt
+; We will feed this structure to the CPU in order to set the protected mode GDT
 gdt_64_descriptor:
-    dw gdt_64_end - gdt_64_start - 1
-    dd gdt_64_start
+    dw gdt_64_end - gdt_64_start - 1        ; Size of GDT, one byte less than true size
+    dd gdt_64_start                         ; Start of the 64 bit gdt
 
-code_seg_64: equ gdt_64_code - gdt_64_start
-data_seg_64: equ gdt_64_data - gdt_64_start
+; Define helpers to find pointers to Code and Data segments
+code_seg_64:                            equ gdt_64_code - gdt_64_start
+data_seg_64:                            equ gdt_64_data - gdt_64_start
