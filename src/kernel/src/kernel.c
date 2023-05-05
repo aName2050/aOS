@@ -1,45 +1,23 @@
-#define VGA_START 0xB8000
-#define VGA_EXTENT 80 * 25
 
-#define STYLE_WB 0x0F
+#include <./driver/vga.h>
 
-typedef struct __attribute__((packed))
-{
-    char character;
-    char style;
-} vga_char;
+int main() {
+    init_video();
 
-volatile vga_char *TEXT_AREA = (vga_char*) VGA_START;
+    set_cursor_pos(0, 0);
+    clearwin(COLOR_BLK, COLOR_LCY);
 
-void clearwin(){
-    vga_char clear_char = {
-        .character=' ',
-        .style=STYLE_WB
-    };
+    const char *first = "Now we have a more advanced vga driver that does what we want! ";
 
-    for(unsigned int i = 0; i < VGA_EXTENT; i++){
-        TEXT_AREA[i] = clear_char;
-    }
-}
+    putstr(first, COLOR_BLK, COLOR_LCY);
 
-void putstr(const char *str){
-    for(unsigned int i = 0; str[i] != '\0'; i++){
-        if(i >= VGA_EXTENT)
-            break;
+    const char *second = "It even wraps the text around the screen and moves the cursor correctly. ";
 
-        vga_char temp = {
-            .character=str[i],
-            .style=STYLE_WB
-        };
+    putstr(second, COLOR_BLK, COLOR_LCY);
 
-        TEXT_AREA[i] = temp;
-    }
-}
+    const char *third = "But if we reach the end of the screen it still doesn't quite scroll properly...";
 
-int main(){
-    clearwin();
-    const char *welcome_msg = "Welcome to the kernel of aOS!";
-    putstr(welcome_msg);
+    putstr(third, COLOR_BLK, COLOR_LCY);
 
     return 0;
 }

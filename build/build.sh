@@ -1,5 +1,4 @@
 #!/bin/bash
-
 (cd bootloader ; nasm -o boot boot.asm)
 boot_result=$?
 
