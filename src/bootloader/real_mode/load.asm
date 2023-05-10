@@ -1,5 +1,5 @@
 ;
-; Protected Mode
+; Long Mode
 ;
 ; load.asm
 ;

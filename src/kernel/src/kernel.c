@@ -1,23 +1,26 @@
-
-#include <./driver/vga.h>
+#include <cpu/isr.h>
+#include <driver/vga.h>
 
 int main() {
-    init_video();
+    isr_install();
 
     set_cursor_pos(0, 0);
-    clearwin(COLOR_BLK, COLOR_LCY);
+    clearwin(COLOR_GRN, COLOR_BLK);
 
-    const char *first = "Now we have a more advanced vga driver that does what we want! ";
+    const char *first = "\n\n\n\nWe can now handle some special characters.";
 
-    putstr(first, COLOR_BLK, COLOR_LCY);
+    putstr(first, COLOR_GRN, COLOR_BLK);
 
-    const char *second = "It even wraps the text around the screen and moves the cursor correctly. ";
+    const char *second = "\nLike tab \t and newline.";
 
-    putstr(second, COLOR_BLK, COLOR_LCY);
+    putstr(second, COLOR_GRN, COLOR_BLK);
 
-    const char *third = "But if we reach the end of the screen it still doesn't quite scroll properly...";
+    const char *third = "\nAnd it scrolls!";
+    for (u16_t i = 0; i < 18; i++){
+        putstr(third, COLOR_GRN, COLOR_BLK);
+    }
 
-    putstr(third, COLOR_BLK, COLOR_LCY);
+    putstr("\nThis interrupt is most likely NOT a double-fault, but a problem with us not remapping IRQ 8, so it shows up on this channel\n", COLOR_GRN, COLOR_BLK);
 
     return 0;
 }

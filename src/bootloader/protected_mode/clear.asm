@@ -1,9 +1,3 @@
-;
-; Protected Mode
-;
-; clear.asm
-;
-
 [bits 32]
 
 ; Clear the VGA memory. (AKA write blank spaces to every character slot)
@@ -11,7 +5,7 @@
 clear_protected:
     ; The pusha command stores the values of all
     ; registers so we don't have to worry about them
-    pusha
+    pushad
 
     ; Set up constants
     mov ebx, vga_extent
@@ -46,7 +40,7 @@ clear_protected:
 
 clear_protected_done:
     ; Restore all registers and return
-    popa
+    popad
     ret
 
 

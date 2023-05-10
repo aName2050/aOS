@@ -31,8 +31,8 @@ call print_bios
 ; of the drive. Note: Only bl will be used
 mov bx, 0x0002
 
-; Now we want to load 5 sectors to load our entire bootloader.
-mov cx, 0x0005
+; Now we want to load 3 sectors for the bootloader and kernel
+mov cx, 0x000A
 
 ; Finally, we want to store the new sector immediately after the first
 ; loaded sector, at adress 0x7E00. This will help a lot with jumping between
@@ -59,16 +59,17 @@ jmp $               ; Infinite loop
 ; DATA STORAGE AREA
 
 ; String Message
-msg_hello_world: db `\r\nHello World, from the BIOS!\r\n`, 0
+msg_hello_world:                db `\r\nHello World, from the BIOS!\r\n`, 0
 
 ; Boot drive storage
-boot_drive: db 0x00
+boot_drive:                     db 0x00
 
 ; Pad boot sector for magic number
 times 510 - ($ - $$) db 0x00
 
 ; Magic number
-dw 0xaa55
+dw 0xAA55
+
 
 ; BEGIN SECOND SECTOR. THIS ONE CONTAINS 32-BIT CODE ONLY
 
@@ -104,13 +105,12 @@ jmp $       ; Infinite Loop
 %include "protected_mode/elevate.asm"
 
 ; Define necessary constants
-vga_start: equ 0x000B8000
-vga_extent: equ 80 * 25 * 2             ; VGA Memory is 80 chars wide by 25 chars tall (one char is 2 bytes)
-kernel_start: equ 0x00100000              ; Kernel is at 1MB
-style_wb: equ 0x0F
+vga_start:                  equ 0x000B8000
+vga_extent:                 equ 80 * 25 * 2             ; VGA Memory is 80 chars wide by 25 chars tall (one char is 2 bytes)
+style_wb:                   equ 0x0F
 
 ; Define messages
-protected_alert: db `64-bit long mode supported`, 0
+protected_alert:                 db `64-bit long mode supported`, 0
 
 ; Fill with zeros to the end of the sector
 times 512 - ($ - bootsector_extended) db 0x00
@@ -125,12 +125,15 @@ mov rdi, style_blue
 mov rsi, long_mode_note
 call print_long
 
+call kernel_start
+
 jmp $
 
 %include "long_mode/clear.asm"
 %include "long_mode/print.asm"
 
-long_mode_note: db `Now running in fully-enabled, 64-bit long mode!`, 0
-style_blue: equ 0x1F
+kernel_start:                   equ 0x8200              ; Kernel is at 1MB
+long_mode_note:                 db `Now running in fully-enabled, 64-bit long mode!`, 0
+style_blue:                     equ 0x1F
 
 times 512 - ($ - begin_long_mode) db 0x00
