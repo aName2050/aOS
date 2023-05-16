@@ -1,1 +1,1 @@
-People who have contributed to aOS and its development will be diplayed here, we thank each and everyone of you that helps out with challenging process of making a fully custom 64-bit operating system from scratch. ❤️
+People who have contributed to aOS and its development will be displayed here, we thank each and everyone of you that helps out with the challenging process of making a fully custom, 64-bit operating system from scratch. ❤️
