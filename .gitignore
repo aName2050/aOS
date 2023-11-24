@@ -1,4 +1,1 @@
-bin/
-compiled/
-.vscode
-os.img
+build
